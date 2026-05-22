@@ -1,0 +1,34 @@
+network:
+  thalamus:
+    E: 696
+    I: 174
+
+  L4:
+    E: 2088
+    I: 522
+
+  L23:
+    E: 2088
+    I: 522
+
+  L5:
+    E: 1736
+    I: 434
+
+  L6:
+    E: 1392
+    I: 348
+
+  splits:
+    L23_E: 2
+    L23_I: 3
+    L4_E: 1
+    L4_I: 1
+    L5_E: 2
+    L56_I: 3
+    L6_E: 1
+
+  simulation:
+    tstop: 100.0
+    dt: 0.1
+    v_init: -65

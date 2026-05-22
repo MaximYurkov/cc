@@ -1,0 +1,50 @@
+{
+  "method": "ga",
+  "fitness_before": 175572.06308009222,
+  "fitness_after": 175570.0,
+  "improvement_percent": 0.0011750617131391398,
+  "params_before": {
+    "exc_weight_mean": 0.001,
+    "exc_weight_std": 0.0009,
+    "exc_tau": 2.0,
+    "exc_delay_mean": 3.0,
+    "exc_delay_std": 2.0,
+    "inh_weight": 0.001,
+    "inh_tau": 3.0,
+    "inh_delay": 2.0,
+    "inh_e": -75.0,
+    "stim_weight": 0.01,
+    "stim_interval": 15.0,
+    "stim_noise": 1.0
+  },
+  "params_after": {
+    "exc_weight_mean": 0.00040665633135147916,
+    "exc_weight_std": 7.83996695836151e-05,
+    "exc_tau": 5.631747698841177,
+    "exc_delay_mean": 3.8011437030470097,
+    "exc_delay_std": 0.5759491158946374,
+    "inh_weight": 0.0009780337016659405,
+    "inh_tau": 1.3094966900369656,
+    "inh_delay": 4.59194180935452,
+    "inh_e": -77.23660055199949,
+    "stim_weight": 0.013353819088790582,
+    "stim_interval": 12.792776902235275,
+    "stim_noise": 0.5200680211778108
+  },
+  "history": [
+    {
+      "generation": 0,
+      "best_fitness": 175570.0,
+      "mean_fitness": 175650.85542505325,
+      "std_fitness": 176.79386178311748
+    },
+    {
+      "generation": 1,
+      "best_fitness": 175570.0,
+      "mean_fitness": 175570.0,
+      "std_fitness": 0.0
+    }
+  ],
+  "n_evaluations": 12,
+  "runtime_seconds": 0.016535520553588867
+}
