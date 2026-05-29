@@ -13,26 +13,42 @@ from core.visualization import SimulationVisualizer
 
 
 def scale_to_target_neurons(cfg: dict, target_total: int = 10000) -> dict:
-    cfg = json.loads(json.dumps(cfg))  # deep copy через json
-    layers = ["thalamus", "L4", "L23", "L5", "L6"]
+    cfg = json.loads(json.dumps(cfg))
 
-    current_total = sum(cfg["network"][l]["E"] + cfg["network"][l]["I"] for l in layers)
+    def actual_total(network):
+        return (
+            network["thalamus"]["E"] + network["thalamus"]["I"] +
+            network["L4"]["E"] + network["L4"]["I"] +
+            2 * network["L23"]["E"] +
+            3 * network["L23"]["I"] +
+            2 * network["L5"]["E"] +
+            3 * (network["L5"]["I"] + network["L6"]["I"]) +
+            network["L6"]["E"]
+        )
+
+    current_total = actual_total(cfg["network"])
     factor = target_total / current_total
 
-    for l in layers:
-        cfg["network"][l]["E"] = round(cfg["network"][l]["E"] * factor)
-        cfg["network"][l]["I"] = round(cfg["network"][l]["I"] * factor)
+    for layer in ["thalamus", "L4", "L23", "L5", "L6"]:
+        cfg["network"][layer]["E"] = max(1, round(cfg["network"][layer]["E"] * factor))
+        cfg["network"][layer]["I"] = max(1, round(cfg["network"][layer]["I"] * factor))
 
-    new_total = sum(cfg["network"][l]["E"] + cfg["network"][l]["I"] for l in layers)
-    diff = target_total - new_total
-    cfg["network"]["L6"]["E"] += diff
+    diff = target_total - actual_total(cfg["network"])
+    cfg["network"]["L6"]["E"] = max(1, cfg["network"]["L6"]["E"] + diff)
 
     return cfg
 
 
 def count_total_neurons(network_cfg: dict) -> int:
-    layers = ["thalamus", "L4", "L23", "L5", "L6"]
-    return sum(network_cfg[l]["E"] + network_cfg[l]["I"] for l in layers)
+    return (
+        network_cfg["thalamus"]["E"] + network_cfg["thalamus"]["I"] +
+        network_cfg["L4"]["E"] + network_cfg["L4"]["I"] +
+        2 * network_cfg["L23"]["E"] +
+        3 * network_cfg["L23"]["I"] +
+        2 * network_cfg["L5"]["E"] +
+        3 * (network_cfg["L5"]["I"] + network_cfg["L6"]["I"]) +
+        network_cfg["L6"]["E"]
+    )
 
 
 def main():

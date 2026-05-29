@@ -341,52 +341,64 @@ class ThalamoCorticalSimulator:
         source_neurons = self.flatten(source_neurons)
         target_neurons = self.flatten(target_neurons)
         netcons, synapses = [], []
-        
-        if not self._neuron_imported:
-            return synapses, netcons
-        
-        h, p = self.h, self.params
-        
-        for src in source_neurons:
-            for tgt in target_neurons:
-                if p.conn_prob < 1.0 and random.random() > p.conn_prob:
-                    continue
-                syn = h.ExpSyn(tgt.soma(0.5))
-                syn.e = p.exc_e
-                syn.tau = p.exc_tau
-                nc = h.NetCon(src.soma(0.5)._ref_v, syn, sec=src.soma)
-                nc.threshold = 0
-                nc.weight[0] = max(0.0, random.gauss(p.exc_weight_mean, p.exc_weight_std))
-                nc.delay = max(p.min_delay, random.gauss(p.exc_delay_mean, p.exc_delay_std))
-                synapses.append(syn)
-                netcons.append(nc)
+
+    if not self._neuron_imported:
         return synapses, netcons
+
+    h, p = self.h, self.params
+    n_targets = len(target_neurons)
+    if n_targets == 0:
+        return synapses, netcons
+
+    k = max(1, int(round(p.conn_prob * n_targets))) if p.conn_prob > 0 else 0
+    k = min(k, n_targets)
+
+    for src in source_neurons:
+        chosen_targets = target_neurons if p.conn_prob >= 1.0 else random.sample(target_neurons, k)
+        for tgt in chosen_targets:
+            syn = h.ExpSyn(tgt.soma(0.5))
+            syn.e = p.exc_e
+            syn.tau = p.exc_tau
+            nc = h.NetCon(src.soma(0.5)._ref_v, syn, sec=src.soma)
+            nc.threshold = 0
+            nc.weight[0] = max(0.0, random.gauss(p.exc_weight_mean, p.exc_weight_std))
+            nc.delay = max(p.min_delay, random.gauss(p.exc_delay_mean, p.exc_delay_std))
+            synapses.append(syn)
+            netcons.append(nc)
+
+    return synapses, netcons
     
     def connect_inh(self, source_neurons, target_neurons) -> Tuple[list, list]:
         import random
         source_neurons = self.flatten(source_neurons)
         target_neurons = self.flatten(target_neurons)
         netcons, synapses = [], []
-        
-        if not self._neuron_imported:
-            return synapses, netcons
-        
-        h, p = self.h, self.params
-        
-        for src in source_neurons:
-            for tgt in target_neurons:
-                if p.conn_prob < 1.0 and random.random() > p.conn_prob:
-                    continue
-                syn = h.ExpSyn(tgt.soma(0.5))
-                syn.e = p.inh_e
-                syn.tau = p.inh_tau
-                nc = h.NetCon(src.soma(0.5)._ref_v, syn, sec=src.soma)
-                nc.threshold = 0
-                nc.weight[0] = p.inh_weight
-                nc.delay = max(p.min_delay, p.inh_delay)
-                synapses.append(syn)
-                netcons.append(nc)
+
+    if not self._neuron_imported:
         return synapses, netcons
+
+    h, p = self.h, self.params
+    n_targets = len(target_neurons)
+    if n_targets == 0:
+        return synapses, netcons
+
+    k = max(1, int(round(p.conn_prob * n_targets))) if p.conn_prob > 0 else 0
+    k = min(k, n_targets)
+
+    for src in source_neurons:
+        chosen_targets = target_neurons if p.conn_prob >= 1.0 else random.sample(target_neurons, k)
+        for tgt in chosen_targets:
+            syn = h.ExpSyn(tgt.soma(0.5))
+            syn.e = p.inh_e
+            syn.tau = p.inh_tau
+            nc = h.NetCon(src.soma(0.5)._ref_v, syn, sec=src.soma)
+            nc.threshold = 0
+            nc.weight[0] = p.inh_weight
+            nc.delay = max(p.min_delay, p.inh_delay)
+            synapses.append(syn)
+            netcons.append(nc)
+
+    return synapses, netcons
     
     def stimulate_group(self, group) -> Tuple[list, list, list]:
         syn_inputs, conns, netstims = [], [], []
