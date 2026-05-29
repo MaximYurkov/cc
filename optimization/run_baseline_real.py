@@ -48,12 +48,18 @@ def main():
 
     cfg_path = Path(args.config)
     cfg = yaml.safe_load(cfg_path.read_text(encoding="utf-8"))
-
+    
     cfg = scale_to_target_neurons(cfg, args.target_neurons)
     cfg["simulation"]["tstop"] = args.tstop
     cfg["simulation"]["dt"] = args.dt
-
-    network_config = load_config(cfg)
+    
+    tmp_cfg_path = Path("network_realistic_10k_runtime.yaml")
+    tmp_cfg_path.write_text(
+        yaml.safe_dump(cfg, sort_keys=False),
+        encoding="utf-8"
+    )
+    
+    network_config = load_config(str(tmp_cfg_path))
     default_params = get_parameter_space().get_default()
 
     sim_config = SimulationConfig(
