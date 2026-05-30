@@ -1,0 +1,13 @@
+{
+  "config_base": "network_realistic.yaml",
+  "target_neurons": 10000,
+  "actual_total_neurons": 10000,
+  "conn_prob": 0.25,
+  "tstop": 100.0,
+  "dt": 0.1,
+  "threads": 4,
+  "elapsed_sec": 755.2057979106903,
+  "elapsed_min": 12.586763298511505,
+  "fitness": 4569641.792500001,
+  "save_dir": "results/baseline_real_10000_cp_0_25"
+}
